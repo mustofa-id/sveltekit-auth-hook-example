@@ -1,20 +1,13 @@
-import type { RequestHandler } from '@sveltejs/kit'
+import { redirect } from '@sveltejs/kit'
 import { serialize } from 'cookie'
+import type { Action, PageServerLoad } from './$types'
 
-export const GET: RequestHandler = ({ locals }) => {
+export const load: PageServerLoad = ({ locals }) => {
 	// redirect to home is user already sign in
-	if (locals.user) {
-		return {
-			status: 302,
-			headers: {
-				location: '/'
-			}
-		}
-	}
-	return {}
+	if (locals.user) throw redirect(302, '/')
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: Action = async ({ request, setHeaders }) => {
 	const form = await request.formData()
 	const username = form.get('username')?.toString()
 	const password = form.get('password')?.toString()
@@ -28,21 +21,19 @@ export const POST: RequestHandler = async ({ request }) => {
 		// also you may need to secured this value using
 		// jwt token instead of base64 string
 		const userCookieValue = Buffer.from(JSON.stringify(user)).toString('base64')
-		return {
-			status: 302,
-			headers: {
-				// redirect to home page
-				location: '/',
-				// setting up cookie
-				'set-cookie': serialize('user', userCookieValue, {
-					path: '/',
-					httpOnly: true,
-					sameSite: 'strict'
-				})
-			}
-		}
+
+		setHeaders({
+			// setting up cookie
+			'set-cookie': serialize('user', userCookieValue, {
+				path: '/',
+				httpOnly: true,
+				sameSite: 'strict'
+			})
+		})
+		// redirect to home page
+		return { location: '/' }
 	}
 
 	// send user input back, this is good UX I think.
-	return { body: { username, password, message: 'Invalid username or password' } }
+	return { errors: { username, password, message: 'Invalid username or password' } }
 }

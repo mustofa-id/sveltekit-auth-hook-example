@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit'
 import { serialize } from 'cookie'
 
 export const GET: RequestHandler = () => {
-	return {
+	return new Response(null, {
 		status: 302,
 		headers: {
 			location: '/auth/signin',
@@ -11,5 +11,5 @@ export const GET: RequestHandler = () => {
 				expires: new Date(0)
 			})
 		}
-	}
+	})
 }
