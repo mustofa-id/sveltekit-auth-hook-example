@@ -1,6 +1,6 @@
 import type { LayoutLoad } from './$types'
 
-export const load: LayoutLoad.root = ({ url }) => {
+export const load: LayoutLoad = ({ url }) => {
 	// we can always set document title using DOM method but
 	// i think setting up from server side is much better
 	const defaultTitle = 'My App'

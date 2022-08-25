@@ -35,5 +35,8 @@ export const POST: Action = async ({ request, setHeaders }) => {
 	}
 
 	// send user input back, this is good UX I think.
-	return { errors: { username, password, message: 'Invalid username or password' } }
+	return {
+		status: 401,
+		errors: { username, password, message: 'Invalid username or password' }
+	}
 }
