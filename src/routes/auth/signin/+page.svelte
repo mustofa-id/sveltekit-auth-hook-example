@@ -1,11 +1,9 @@
-<script context="module">
-	export const prerender = false
-</script>
-
 <script lang="ts">
-	export let username = ''
-	export let password = ''
-	export let message: string | undefined
+	import type { Errors } from './$types'
+
+	export let errors: Errors
+
+	$: ({ username = '', password = '', message } = errors ?? <Record<string, string>>{})
 </script>
 
 <form action="/auth/signin" method="post">
