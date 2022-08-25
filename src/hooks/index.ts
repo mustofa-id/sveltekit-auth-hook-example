@@ -18,9 +18,11 @@ const cookieParser: Handle = async ({ event, resolve }) => {
 
 /**
  * handle auth flow based on user information in `locals` object
- * TODO: this is doesn't work in production build
  */
-const authHandler: Handle = async ({ event, resolve }) => {
+const authHandler: Handle = ({ event, resolve }) => {
+	// skip auth logic on build to prevent infinite redirection in production mode
+	if (process?.env?.BUILD) return resolve(event)
+
 	const publicPaths = ['/auth/signin']
 	const user = event.locals.user
 	if (!user && !publicPaths.includes(event.url.pathname)) {
@@ -31,7 +33,7 @@ const authHandler: Handle = async ({ event, resolve }) => {
 			}
 		})
 	}
-	return await resolve(event)
+	return resolve(event)
 }
 
 export const handle = sequence(cookieParser, authHandler)
