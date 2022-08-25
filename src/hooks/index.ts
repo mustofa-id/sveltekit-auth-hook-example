@@ -1,4 +1,4 @@
-import type { GetSession, Handle } from '@sveltejs/kit'
+import type { Handle } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import cookie from 'cookie'
 
@@ -35,10 +35,3 @@ const authHandler: Handle = async ({ event, resolve }) => {
 }
 
 export const handle = sequence(cookieParser, authHandler)
-
-export const getSession: GetSession = ({ locals }) => {
-	// in real app we may need to get user information
-	// like role or permission from data source like db or api
-	// and never pass user password or other sensitive data here
-	return { user: locals.user }
-}
