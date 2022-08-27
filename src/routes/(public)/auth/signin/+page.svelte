@@ -6,8 +6,6 @@
 	$: ({ username = '', password = '', message } = errors ?? <Record<string, string>>{})
 </script>
 
-<pre>errors: {JSON.stringify(errors, null, 2)}</pre>
-
 <form action="/auth/signin" method="post">
 	<section>
 		<h2>Please Sign In</h2>
