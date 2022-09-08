@@ -1,17 +1,15 @@
 import type { Handle } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
-import cookie from 'cookie'
 
 /**
  * parse cookie from request header and set
  * parsed cookie value as user to `locals` object
  */
 const cookieParser: Handle = async ({ event, resolve }) => {
-	const plainCookie = event.request.headers.get('cookie')
-	if (plainCookie) {
-		const parsedCookie = cookie.parse(plainCookie)
-		const plainUser = parsedCookie.user && Buffer.from(parsedCookie.user, 'base64').toString()
-		event.locals.user = plainUser ? JSON.parse(plainUser) : undefined
+	const userCookieValue = event.cookies.get('user')
+	if (userCookieValue) {
+		const userString = Buffer.from(userCookieValue, 'base64').toString()
+		event.locals.user = userString ? JSON.parse(userString) : undefined
 	}
 	return await resolve(event)
 }
@@ -20,9 +18,7 @@ const cookieParser: Handle = async ({ event, resolve }) => {
  * handle auth flow based on user information in `locals` object
  */
 const authHandler: Handle = ({ event, resolve }) => {
-	// skip auth logic on build to prevent infinite redirection in production mode
-	if (process?.env?.BUILD) return resolve(event)
-
+	// TODO: get public path from routes dir
 	const publicPaths = ['/auth/signin']
 	const user = event.locals.user
 	if (!user && !publicPaths.includes(event.url.pathname)) {

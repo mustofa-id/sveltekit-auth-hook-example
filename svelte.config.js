@@ -8,7 +8,13 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		files: {
+			hooks: {
+				server: 'src/hooks/server.ts',
+				client: 'src/hooks/client.ts'
+			}
+		}
 	}
 }
 
