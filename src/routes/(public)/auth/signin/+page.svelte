@@ -1,12 +1,10 @@
 <script lang="ts">
-	import type { Errors } from './$types'
+	import type { ActionData } from './$types'
 
-	export let errors: Errors
-
-	$: ({ username = '', password = '', message } = errors ?? <Record<string, string>>{})
+	export let form: ActionData
 </script>
 
-<form action="/auth/signin" method="post">
+<form method="post">
 	<section>
 		<h2>Please Sign In</h2>
 	</section>
@@ -23,10 +21,10 @@
 			<input
 				type="text"
 				name="username"
-				value={username}
+				value={form?.username ?? null}
 				placeholder="Your username here"
 				spellcheck="false"
-				autofocus={!!username}
+				autofocus={!!form?.username}
 				required
 			/>
 		</label>
@@ -35,7 +33,7 @@
 			<input
 				type="password"
 				name="password"
-				value={password}
+				value={form?.password ?? null}
 				placeholder="Your password here"
 				spellcheck="false"
 				required
@@ -48,7 +46,7 @@
 	</section>
 
 	<section>
-		<em>{message ?? ''}</em>
+		<em>{form?.message ?? ''}</em>
 	</section>
 </form>
 
